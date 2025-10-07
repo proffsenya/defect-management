@@ -14,7 +14,17 @@ export function CreateDefectDialog({ open, onOpenChange }) {
 
   const [form, setForm] = useState({ projectId: "", title: "", description: "", priority: "medium", assigneeId: undefined, dueDate: undefined });
 
-  
+  const submit = async () => {
+    if (!form.projectId || !form.title) return; // Проверка на обязательные поля
+    try {
+      await createDefect.mutateAsync(form); // Отправка данных на сервер
+      onOpenChange(false); // Закрытие диалога после отправки
+      setForm({ projectId: "", title: "", description: "", priority: "medium", assigneeId: undefined, dueDate: undefined }); // Очистка формы
+    } catch (error) {
+      console.error("Ошибка при создании дефекта:", error);
+      // Ошибка уже обрабатывается в useCreateDefect хуке
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
